@@ -9,22 +9,36 @@
     band: string;
     frequency_tx: number;
     frequency_rx: number;
-    ctcss_tx: number;
-    ctcss_rx: number;
+    ctcss_tx: number | null;
+    ctcss_rx: number | null;
     ch: string;
     ch_new: string;
     callsign: string;
+    antenna_heigth: number | null;
     site_name: string;
     sysop: string;
+    url: string | null;
+    hardware: string | null;
+    mmdvm: boolean | null;
+    solar_power: boolean | null;
+    battery_power: boolean | null;
     status: string;
-    fm: boolean;
-    dmr: boolean;
-    c4fm: boolean;
-    dstar: boolean;
-    tetra: boolean;
-    other_mode: boolean;
-    other_mode_name: string;
-    echolink_id: number;
+    fm: boolean | null;
+    fm_wakeup: string | null;
+    dmr: boolean | null;
+    cc: number | null;
+    c4fm: boolean | null;
+    c4fm_groups: string | null;
+    dstar: boolean | null;
+    dstar_rpt1: string | null;
+    dstar_rpt2: string | null;
+    tetra: boolean | null;
+    other_mode: boolean | null;
+    other_mode_name: string | null;
+    echolink: string | null;
+    echolink_id: number | null;
+    digital_id: string | null;
+    comment: string | null;
   }
 
   // State declarations
@@ -171,6 +185,25 @@
       sortDirection = 1;
     }
   }
+
+  function getTooltipInfo(r: Repeater): { label: string; value: string }[] {
+    const items: { label: string; value: string }[] = [];
+    if (r.sysop) items.push({ label: 'Sysop', value: r.sysop });
+    if (r.hardware) items.push({ label: 'Hardware', value: r.hardware });
+    if (r.mmdvm != null) items.push({ label: 'MMDVM', value: r.mmdvm ? 'Ja' : 'Nein' });
+    if (r.solar_power) items.push({ label: 'Solar', value: 'Ja' });
+    if (r.battery_power) items.push({ label: 'Akku', value: 'Ja' });
+    if (r.antenna_heigth != null) items.push({ label: 'Antennenh\u00f6he', value: `${r.antenna_heigth} m` });
+    if (r.fm_wakeup) items.push({ label: 'FM Wakeup', value: r.fm_wakeup });
+    if (r.digital_id) items.push({ label: 'Digital ID', value: r.digital_id });
+    if (r.cc != null) items.push({ label: 'CC', value: String(r.cc) });
+    if (r.c4fm_groups) items.push({ label: 'C4FM Groups', value: r.c4fm_groups });
+    if (r.dstar_rpt1) items.push({ label: 'D-STAR RPT1', value: r.dstar_rpt1 });
+    if (r.dstar_rpt2) items.push({ label: 'D-STAR RPT2', value: r.dstar_rpt2 });
+    if (r.echolink) items.push({ label: 'Echolink', value: r.echolink });
+    if (r.comment) items.push({ label: 'Kommentar', value: r.comment });
+    return items;
+  }
 </script>
 <div class="container">
   <div class="header">
@@ -249,8 +282,25 @@
       </thead>
       <tbody>
         {#each filteredRepeaters as repeater}
+          {@const tooltipInfo = getTooltipInfo(repeater)}
           <tr>
-            <td>{repeater.callsign}</td>
+            <td class="callsign-cell">
+              {#if repeater.url}
+                <a href={repeater.url} target="_blank" rel="noopener" class="callsign-link">{repeater.callsign}</a>
+              {:else}
+                {repeater.callsign}
+              {/if}
+              {#if tooltipInfo.length > 0}
+                <div class="tooltip">
+                  {#each tooltipInfo as item}
+                    <div class="tooltip-row">
+                      <span class="tooltip-label">{item.label}:</span>
+                      {item.value}
+                    </div>
+                  {/each}
+                </div>
+              {/if}
+            </td>
             <td>{typeTranslations[repeater.type_of_station] || repeater.type_of_station}</td>
             <td>{repeater.band}</td>
             <td>{repeater.frequency_tx}</td>
@@ -381,6 +431,44 @@
 
   tr {
     transition: background-color 0.3s;
+  }
+
+  .callsign-cell {
+    position: relative;
+    cursor: help;
+  }
+
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    z-index: 1000;
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 0.75rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 0.8rem;
+    pointer-events: none;
+  }
+
+  .callsign-cell:hover .tooltip {
+    display: block;
+  }
+
+  .tooltip-row {
+    margin-bottom: 0.25rem;
+  }
+
+  .tooltip-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .tooltip-label {
+    font-weight: 600;
   }
 
   @media (max-width: 768px) {
