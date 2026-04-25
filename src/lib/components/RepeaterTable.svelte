@@ -282,6 +282,7 @@
     margin: 0 auto;
     padding: 1rem;
     font-family: 'Open Sans', sans-serif;
+    transition: color 0.3s;
   }
 
   .header {
@@ -298,7 +299,7 @@
 
   h2 {
     margin: 0;
-    color: #333;
+    color: var(--color-text);
   }
 
   .filters {
@@ -311,10 +312,13 @@
   .select,
   .search-input {
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
     min-width: 150px;
     flex: 1;
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
+    transition: border-color 0.3s, background-color 0.3s, color 0.3s;
   }
 
   .info {
@@ -322,21 +326,22 @@
   }
 
   a {
-    color: #008CEA;
+    color: var(--color-link);
   }
 
   .export-btn {
-    background-color: #008CEA;
-    color: white;
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.3s;
   }
 
   .export-btn:hover {
-    background-color: #0070bb;
+    background-color: var(--color-button-hover);
   }
 
   .table-container {
@@ -355,21 +360,27 @@
   th, td {
     padding: 0.75rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--color-border);
+    transition: border-color 0.3s;
   }
 
   th {
-    background-color: #f5f5f5;
+    background-color: var(--color-table-header-bg);
     cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.3s;
   }
 
   th:hover {
-    background-color: #eee;
+    background-color: var(--color-table-header-hover);
   }
 
   tr:hover {
-    background-color: #f9f9f9;
+    background-color: var(--color-table-row-hover);
+  }
+
+  tr {
+    transition: background-color 0.3s;
   }
 
   @media (max-width: 768px) {
